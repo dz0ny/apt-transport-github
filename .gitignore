@@ -1,0 +1,46 @@
+docs/_build/
+*.log
+.cache
+*.spec
+#  Usually these files are written by a python script from a template
+.Python
+nosetests.xml
+*.manifest
+lib64/
+/packaging
+*.py[cod]
+# Distribution / packaging
+.installed.cfg
+downloads/
+parts/
+# PyInstaller
+lib/
+# PyBuilder
+# Django stuff:
+# Byte-compiled / optimized / DLL files
+dist/
+coverage.xml
+# C extensions
+*.egg-info/
+env/
+__pycache__/
+*.egg
+.tox/
+*.mo
+var/
+target/
+develop-eggs/
+# Sphinx documentation
+pip-delete-this-directory.txt
+# Translations
+htmlcov/
+.coverage
+build/
+*.pot
+sdist/
+eggs/
+*.so
+#  before PyInstaller builds the exe, so as to inject date/other infos into it.
+# Installer logs
+pip-log.txt
+# Unit test / coverage reports
