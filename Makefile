@@ -17,6 +17,7 @@ deb:
 		--description "Fetch Debian packages via Github release API" \
 		-m "Janez Troha <dz0ny@ubuntu.si>" \
 		--license "MIT" \
+		-d "python-requests" \
 		--deb-compression bzip2 \
 		-a amd64 \
 		packaging/root/=/

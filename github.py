@@ -1,7 +1,8 @@
-#!/usr/bin/python -u
+#!env python -u
 
 # The MIT License (MIT)
 # Copyright (c) 2014 Janez Troha <dz0ny@ubuntu.si>
+# Copyright (c) 2014 Bashton Ltd.
 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -39,13 +40,9 @@ logger = logging.getLogger('github')
 hdlr = logging.FileHandler('/var/tmp/apt-github.log')
 formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
 hdlr.setFormatter(formatter)
-logger.addHandler(hdlr) 
+logger.addHandler(hdlr)
 logger.setLevel(logging.DEBUG)
 
-class GithubAPI(object):
-    def __init__(self):
-        self.seddion = requests.Session()
-        
 
 class APTMessage(object):
     MESSAGE_CODES = {
@@ -84,12 +81,35 @@ class APTMessage(object):
         return result + '\n'
 
 
-class Github_method(object):
+class GithubPackages(object):
     __eof = False
 
     def __init__(self):
         self.send_capabilities()
+        self.session = requests.Session()
 
+    def parse_package(package, version):
+        return {
+            'version': version,
+            'name': package.get('name'),
+            'download': package.get('browser_download_url'),
+            'updated_at': package.get('updated_at'),
+        }
+
+    def releases(repo):
+        url = 'https://api.github.com/{}/releases'.format(repo)
+        req = self.session.get(url)
+        return req.json()
+
+    def packages(repo, arch):
+        for release in self.releases(repo):
+            for package in release.get('assets'):
+                if package.get('name').endswith('_{}.deb'.format(arch)):
+                    yield self.parse_package(
+                        package,
+                        release.get('tag_name')
+                    )
+                    
     def fail(self, message='Failed'):
         self.send_uri_failure({'URI': self.uri, 'Message': message})
 
@@ -159,6 +179,7 @@ class Github_method(object):
                     self.fail(e.__class__.__name__ + ": " + str(e))
             else:
                 return 100
+
     def fetch_packages(arch):
         pass
 
@@ -213,7 +234,7 @@ class Github_method(object):
 
 if __name__ == '__main__':
     try:
-        method = S3_method()
+        method = GithubPackages()
         ret = method.run()
         sys.exit(ret)
     except KeyboardInterrupt:
